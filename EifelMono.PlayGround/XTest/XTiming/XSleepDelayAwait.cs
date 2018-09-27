@@ -14,7 +14,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
     {
         public XSleepDelayAwait(ITestOutputHelper output) : base(output) { }
 
-        private const int Runs = 10;
+        private const int Runs = 5;
         private List<int> WaitValues { get; } = new List<int> { 1, 5, 10, 15, 20, 25, 50, 100, 200, 1000 };
         [Fact]
         public void XThreadSleep()
@@ -31,7 +31,27 @@ namespace EifelMono.PlayGround.XTest.XTiming
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
                 WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
+            }
+        }
+
+        [Fact]
+        public void XManualResetEventWaitOne()
+            => XManualResetEventWaitOneX(WaitValues);
+        private void XManualResetEventWaitOneX(List<int> waitValues)
+        {
+            foreach (var waitValue in waitValues ?? WaitValues)
+            {
                 Line();
+                WriteLine($"ManualResetEvent.WaitOne({waitValue}) msec Runs={Runs}");
+                var stopwatch = Stopwatch.StartNew();
+                for (var run = 0; run < Runs; run++)
+                {
+                    ManualResetEvent manualResetEvent = new ManualResetEvent(false);
+                    manualResetEvent.WaitOne(waitValue);
+                }
+                stopwatch.Stop();
+                var time = (double)stopwatch.ElapsedMilliseconds / Runs;
+                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
             }
         }
 
@@ -52,7 +72,6 @@ namespace EifelMono.PlayGround.XTest.XTiming
                     stopwatch.Stop();
                     var time = (double)stopwatch.ElapsedMilliseconds / Runs;
                     WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
-                    Line();
                 }
             }
         }
@@ -72,7 +91,6 @@ namespace EifelMono.PlayGround.XTest.XTiming
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
                 WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
-                Line();
             }
         }
 
@@ -92,7 +110,6 @@ namespace EifelMono.PlayGround.XTest.XTiming
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
                 WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
-                Line();
             }
         }
 
@@ -131,6 +148,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
                 Line();
                 WriteLine($"wait={waitValue} ms");
                 XThreadSleepX((new List<int> { waitValue }));
+                XManualResetEventWaitOneX((new List<int> { waitValue }));
                 XTaskDelayWaitX((new List<int> { waitValue }));
                 await XAsyncTaskDelayX((new List<int> { waitValue }));
                 await XAsyncTaskDelayConfigureAWaitX((new List<int> { waitValue }));
