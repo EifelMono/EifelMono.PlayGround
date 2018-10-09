@@ -30,7 +30,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
                     Thread.Sleep(waitValue);
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
-                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
+                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} msec");
             }
         }
 
@@ -51,7 +51,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
                 }
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
-                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
+                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} msec");
             }
         }
 
@@ -71,7 +71,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
                         await Task.Delay(waitValue);
                     stopwatch.Stop();
                     var time = (double)stopwatch.ElapsedMilliseconds / Runs;
-                    WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
+                    WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} msec");
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
                     await Task.Delay(waitValue).ConfigureAwait(false);
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
-                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
+                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} msec");
             }
         }
 
@@ -109,7 +109,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
                     Task.Delay(waitValue).Wait();
                 stopwatch.Stop();
                 var time = (double)stopwatch.ElapsedMilliseconds / Runs;
-                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} ms");
+                WriteLine($"Meassured={time:0.00} msec loss={time - waitValue:0.00} msec");
             }
         }
 
