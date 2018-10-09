@@ -55,6 +55,7 @@ namespace EifelMono.PlayGround.XTest.XOthers
 
         private bool ToInt(string test, out int value)
         {
+            value= 0;
             return true;
         }
     }
