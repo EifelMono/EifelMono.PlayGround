@@ -186,8 +186,55 @@ namespace EifelMono.PlayGround.XTest.XLinq
             });
         }
 
+
         [Fact]
         public void TestWithNull3()
+        {
+            TryCatch(() =>
+            {
+                var testObject = new ClassA {
+                    NameA = "A.1",
+                    ClassBs = new List<ClassB> {
+                    new ClassB {
+                        NameB= "A1.B1",
+                        ClassCs= new List<ClassC> {
+                            new ClassC {
+                                NameC= "A1.B1.C1"
+                            },
+                            new ClassC {
+                                NameC= "A1.B1.C2"
+                            },
+                            null,
+                            new ClassC {
+                                NameC= "A1.B1.C4"
+                            }
+                        }
+                    },
+                    null,
+                    new ClassB {
+                        NameB= "A1.B3",
+                        ClassCs= new List<ClassC> {
+                            new ClassC {
+                                NameC= "A1.B3.C1"
+                            },
+                            new ClassC {
+                                NameC= "A1.B3.C2"
+                            },
+                            null,
+                        }
+                    }
+                }
+                };
+
+                var items = testObject.ClassBs.NotNull().SelectMany(b => b.ClassCs).NotNull().Select(c => c.NameC);
+
+                foreach (var item in items)
+                    Dump(item);
+            });
+        }
+
+        [Fact]
+        public void TestWithNull3A()
         {
             TryCatch(() =>
             {
@@ -231,10 +278,15 @@ namespace EifelMono.PlayGround.XTest.XLinq
                     Dump(item);
             });
         }
+
     }
 
     public static class LinqExtensions
     {
+        public static IEnumerable<T> NotNull<T>(this IEnumerable<T> thisValue)
+            => thisValue.Where(s => s != null);
+
+
         /// <summary>
         /// SelectManyNN SelectManyNotNull
         /// </summary>
@@ -243,7 +295,7 @@ namespace EifelMono.PlayGround.XTest.XLinq
         /// <param name="source"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static IEnumerable<TResult>SelectManyNN<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> func)
+        public static IEnumerable<TResult> SelectManyNN<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> func)
             => source.Where(s => s != null).SelectMany(func);
 
         /// <summary>
