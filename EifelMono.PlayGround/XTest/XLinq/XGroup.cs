@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace EifelMono.PlayGround.XTest.XLinq
 {
-    public class XGroup: XPlayGround
+    public class XGroup : XPlayGround
     {
         public XGroup(ITestOutputHelper output) : base(output) { }
 
