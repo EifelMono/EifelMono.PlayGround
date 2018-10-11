@@ -42,5 +42,21 @@ namespace EifelMono.PlayGround.XTest.XOthers
                 Output.WriteLine("DateTime Ok");
             Output.WriteLine($"DateTime={dateTime}");
         }
+
+        [Fact]
+        public void Test4()
+        {
+            if (!ToInt("test", out var dateTime))
+                Output.WriteLine("Wrong DateTime");
+            else
+                Output.WriteLine("DateTime Ok");
+            Output.WriteLine($"DateTime={dateTime}");
+        }
+
+        private bool ToInt(string test, out int value)
+        {
+            value= 0;
+            return true;
+        }
     }
 }
