@@ -53,10 +53,60 @@ namespace EifelMono.PlayGround.XTest.XOthers
             Output.WriteLine($"DateTime={dateTime}");
         }
 
+        // Out need to initialize the value in the method
         private bool ToInt(string test, out int value)
         {
-            value= 0;
+            value = 0;
             return true;
+        }
+
+        [Fact]
+        public void DateTimeCompare()
+        {
+            {
+                var d1 = new DateTime(1961, 2, 14, 11, 12, 13, 15);
+                var d2 = new DateTime(1961, 2, 14, 11, 12, 13, 16);
+
+                Assert.NotEqual(d1, d2);
+                Assert.False(IsEqualTo(d1, d2));
+            }
+            {
+                var d1 = new DateTime(1961, 2, 14, 11, 12, 13, 15);
+                var d2 = new DateTime(1961, 2, 14, 11, 12, 13, 15);
+
+                Assert.Equal(d1, d2);
+                Assert.True(IsEqualTo(d1, d2));
+            }
+            {
+                var d1 = new DateTime(1961, 2, 14, 11, 12, 13, 15, DateTimeKind.Local);
+                var d2 = new DateTime(1961, 2, 14, 11, 12, 13, 15, DateTimeKind.Utc);
+
+                Assert.Equal(d1, d2);
+                Assert.True(IsEqualTo(d1, d2));
+            }
+            {
+                var d1 = new DateTime(1961, 2, 14, 11, 12, 13, 15, DateTimeKind.Unspecified);
+                var d2 = new DateTime(1961, 2, 14, 11, 12, 13, 15, DateTimeKind.Utc);
+
+                Assert.Equal(d1, d2);
+                Assert.True(IsEqualTo(d1, d2));
+            }
+        }
+
+
+        private bool IsEqualTo(DateTime instance, DateTime compareValue)
+        {
+            if (instance == compareValue)
+                return true;
+
+            return (
+                (instance.Year == compareValue.Year) &&
+                (instance.Month == compareValue.Month) &&
+                (instance.Day == compareValue.Day) &&
+                (instance.Hour == compareValue.Hour) &&
+                (instance.Minute == compareValue.Minute) &&
+                (instance.Second == compareValue.Second) &&
+                (instance.Millisecond == compareValue.Millisecond));
         }
     }
 }
