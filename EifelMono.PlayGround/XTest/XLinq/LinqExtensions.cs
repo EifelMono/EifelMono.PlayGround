@@ -6,9 +6,6 @@ namespace EifelMono.PlayGround.XTest.XLinq
 {
     public static class LinqExtension
     {
-        public static IEnumerable<T> NotNull<T>(this IEnumerable<T> thisValue)
-            => thisValue.Where(s => s != null);
-
         public static void Foreach<T>(this List<T> items, Action<T> action)
         {
             foreach (var item in items)

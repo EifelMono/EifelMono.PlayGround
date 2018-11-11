@@ -226,7 +226,7 @@ namespace EifelMono.PlayGround.XTest.XLinq
                 }
                 };
 
-                var items = testObject.ClassBs.NotNull().SelectMany(b => b.ClassCs).NotNull().Select(c => c.NameC);
+                var items = testObject.ClassBs.WhereNotNull().SelectMany(b => b.ClassCs).WhereNotNull().Select(c => c.NameC);
 
                 foreach (var item in items)
                     Dump(item);
