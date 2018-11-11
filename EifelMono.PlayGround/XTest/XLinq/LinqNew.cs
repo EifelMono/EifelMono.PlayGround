@@ -8,7 +8,6 @@ namespace EifelMono.PlayGround.XTest.XLinq
         public static IEnumerable<T> Params<T>(params T[] @params)
             => @params;
 
-        public static IEnumerable<int> Range(int start, int count)
-            => Enumerable.Range(start, count);
+        public static IEnumerable<int> Range(int start, int count) => Enumerable.Range(start, count);
     }
 }

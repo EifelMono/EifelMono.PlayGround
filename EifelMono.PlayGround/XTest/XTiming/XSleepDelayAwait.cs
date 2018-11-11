@@ -95,8 +95,7 @@ namespace EifelMono.PlayGround.XTest.XTiming
         }
 
         [Fact]
-        public void XTaskDelayWait()
-            => XTaskDelayWaitX(WaitValues);
+        public void XTaskDelayWait() => XTaskDelayWaitX(WaitValues);
 
         private void XTaskDelayWaitX(List<int> waitValues)
         {

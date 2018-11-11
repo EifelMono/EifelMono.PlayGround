@@ -49,9 +49,9 @@ csharp_preserve_single_line_blocks = true
 #Style - expression bodied member options
 
 #prefer block bodies for constructors
-csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_constructors = false:silent
 #prefer block bodies for methods
-csharp_style_expression_bodied_methods = false:suggestion
+csharp_style_expression_bodied_methods = false:silent
 
 #Style - expression level options
 

@@ -272,7 +272,7 @@ namespace EifelMono.PlayGround.XTest.XLinq
                 }
                 };
 
-                var items = testObject.ClassBs.SelectManyNN(b => b.ClassCs).SelectNN(c => c.NameC);
+                var items = testObject.ClassBs.SelectManyNotNull(b => b.ClassCs).SelectNotNull(c => c.NameC);
 
                 foreach (var item in items)
                     Dump(item);
@@ -280,7 +280,4 @@ namespace EifelMono.PlayGround.XTest.XLinq
         }
 
     }
-
-   
-
 }

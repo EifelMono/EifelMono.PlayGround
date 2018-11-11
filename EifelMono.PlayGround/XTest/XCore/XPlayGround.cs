@@ -11,22 +11,15 @@ namespace EifelMono.PlayGround.XCore
     {
         protected readonly ITestOutputHelper Output;
 
-        public XPlayGround(ITestOutputHelper output)
-        {
-            this.Output = output;
-        }
+        public XPlayGround(ITestOutputHelper output) => Output = output;
 
-        public void WriteLine(string text= "")
-            => Output.WriteLine(text);
+        public void WriteLine(string text= "") => Output.WriteLine(text);
 
-        public void Line(int count=80)
-            => Output.WriteLine(new string('-', count));
+        public void Line(int count=80) => Output.WriteLine(new string('-', count));
 
-        public void DoubleLine(int count = 80)
-          => Output.WriteLine(new string('=', count));
+        public void DoubleLine(int count = 80) => Output.WriteLine(new string('=', count));
 
-        public void Dump(object dump)
-            => Output.WriteLine(JsonConvert.SerializeObject(dump, Formatting.Indented));
+        public void Dump(object dump) => Output.WriteLine(JsonConvert.SerializeObject(dump, Formatting.Indented));
 
         public void TryCatch(Action action)
         {

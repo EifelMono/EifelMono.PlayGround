@@ -21,29 +21,16 @@ namespace EifelMono.PlayGround.XTest.XLinq
                 action?.Invoke(item);
         }
 
+        public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> thisValue)
+            => thisValue.Where(s => s != null);
 
-        /// <summary>
-        /// SelectManyNN SelectManyNotNull
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static IEnumerable<TResult> SelectManyNN<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> func)
-            => source.Where(s => s != null).SelectMany(func);
+        public static IEnumerable<TResult> SelectManyNotNull<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> func)
+            => source.WhereNotNull().SelectMany(func);
 
-        /// <summary>
-        /// SelectNN SelectNotNull
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static IEnumerable<TResult> SelectNN<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> func)
-            => source.Where(s => s != null).Select(func);
+        public static IEnumerable<TResult> SelectNotNull<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> func)
+            => source.WhereNotNull().Select(func);
 
-
+        public static IEnumerable<T> Params<T>(Type type, params T[] @params)
+            => @params;
     }
 }
