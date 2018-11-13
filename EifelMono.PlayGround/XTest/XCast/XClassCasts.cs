@@ -64,8 +64,44 @@ namespace EifelMono.PlayGround.XTest.XCast
             // VTDBA = (ClassTDBA)VTBA;         // Does not compile
             // VTDBA = (ClassTDBA)VTCA;         // Does not compile
 
-            object o = VTA;
-            var x = (ClassT<ClassA>)o;
+
+            // public class ClassTA : ClassT<ClassA> { }
+            var a = new ClassT<ClassA>();
+            var b = new ClassTA();  // ClassT<ClassA>;
+            a = b;
+        }
+
+
+        [Fact]
+        public void ObjectCasts()
+        {
+            // public class ClassA { }
+
+            // public class ClassTA : ClassT<ClassA> { }
+
+            {
+                var a = new ClassT<ClassA>();
+                var b = new ClassTA();     // ClassT<ClassBA>;
+                a = b;
+            }
+            {
+                var a = new ClassT<ClassA>();
+                var b = new ClassTA();          // ClassT<ClassBA>;
+                WriteLine($"a {a.GetType().Name}");
+                WriteLine($"b {b.GetType().Name}");
+
+                {
+                    a = b;                     
+                }
+                {
+                    // b = (ClassTA)a;                      // InvalidCastException during run
+                    object o = a;
+                    Convert.ChangeType(o, typeof(ClassTA));
+                    var x = (ClassTA)o;                     // InvalidCastException during run
+                    WriteLine($"o {o.GetType().Name}");
+                    WriteLine($"x {x.GetType().Name}");
+                }
+            }
         }
     }
 }
