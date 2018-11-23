@@ -12,51 +12,61 @@ namespace EifelMono.PlayGround.XTest.XExpressions
 {
     public class XWithAutoMapper : XPlayGround
     {
+        private static bool MapperInited = false;
         private List<PersonDto1> ListOfPerson1 = new List<PersonDto1> {
             new PersonDto1 {
                 Id1=1,
                 Name1="Andreas Klapperich",
-                Gender1= GenderDto1.Male,
+                Gender1= 1,
                 BirthDate1= new DateTime(1961,2,14),
                 City1= "Rieden",
+                State1= StateDto1.Rlp
             },
             new PersonDto1 {
                 Id1=2,
                 Name1="Heinz Becker",
-                Gender1= GenderDto1.Male,
+                Gender1=1,
                 BirthDate1= new DateTime(1949,10,13),
                 City1= "Bexbach",
+                State1= StateDto1.Sar
             },
                 new PersonDto1 {
                 Id1=3,
                 Name1="Hugo Egon Balder",
-                Gender1= GenderDto1.Male,
+                Gender1= 1,
                 BirthDate1= new DateTime(1950,3,22),
                 City1= "Köln",
+                State1= StateDto1.Nrw
             },
             new PersonDto1 {
                 Id1=4,
                 Name1="Alber Eintstein",
-                Gender1= GenderDto1.Male,
+                Gender1= 1,
                 BirthDate1= new DateTime(1879,3,14),
                 City1= "Ulm",
+                State1= StateDto1.Bay
             },
             new PersonDto1 {
                 Id1=2,
                 Name1="Hilde Becker",
-                Gender1= GenderDto1.Female,
+                Gender1= 2,
                 BirthDate1= new DateTime(1955,10,13),
-                City1= "Bexbach"
+                City1= "Bexbach",
+                State1= StateDto1.Sar
             }
         };
 
         public XWithAutoMapper(ITestOutputHelper output) : base(output)
         {
-            Mapper.Initialize(cfg =>
+            if (!MapperInited)
             {
-                cfg.AddProfile<PersonDtoMapping>();
-                cfg.AddExpressionMapping();
-            });
+                Mapper.Initialize(cfg =>
+                {
+                    cfg.AddProfile<PersonDtoMapping>();
+                    cfg.AddExpressionMapping();
+                });
+                MapperInited = true;
+            }
         }
 
         internal PersonDto1 Map(PersonDto2 persionDto2)
@@ -86,6 +96,13 @@ namespace EifelMono.PlayGround.XTest.XExpressions
             => Mapper.Map<Expression<Func<PersonDto1, bool>>, Expression<Func<PersonDto2, bool>>>(expression1);
 
         [Fact]
+        public void TestMapVisaVersa()
+        {
+            var p1 = ListOfPerson1[0];
+            var p2 = Map(p1);
+            var p3 = Map(p2);
+        }
+        [Fact]
         public void TestNormalMapping()
         {
             {
@@ -103,11 +120,11 @@ namespace EifelMono.PlayGround.XTest.XExpressions
                 Dump(p2);
             }
             {
-                var p1 = ListOfPerson1.Where(p => p.Gender1== GenderDto1.Female);
+                var p1 = ListOfPerson1.Where(p => p.Gender1 == 2);
                 Dump(p1);
                 var p2 = Map(p1);
                 Assert.Single(p2);
-                Assert.Equal(GenderDto1.Female, p1.First().Gender1);
+                Assert.Equal(2, p1.First().Gender1);
                 Assert.Equal(GenderDto2.Female, p2.First().Gender2);
                 Dump(p2);
             }
@@ -116,13 +133,13 @@ namespace EifelMono.PlayGround.XTest.XExpressions
         [Fact]
         public void TestExpressionMapHere()
         {
-            Expression<Func<PersonDto2, bool>> expression2 = (p => p.Name2 == "Andreas Klaperich");
+            Expression<Func<PersonDto2, bool>> whereExpression2 = (p => p.Name2 == "Andreas Klaperich");
 
             var expression1 = Mapper
                 .Map<
                     Expression<Func<PersonDto2, bool>>
                     , Expression<Func<PersonDto1, bool>>>
-                    (expression2);
+                    (whereExpression2);
 
             var func1 = expression1.Compile();
             var p1 = ListOfPerson1.Where(func1).FirstOrDefault();
@@ -137,8 +154,8 @@ namespace EifelMono.PlayGround.XTest.XExpressions
         public void TestExpression()
         {
             {
-                Expression<Func<PersonDto2, bool>> expression2 = (p => p.Name2 == "Andreas Klapperich");
-                var p1 = ListOfPerson1.Where(Map(expression2).Compile());
+                Expression<Func<PersonDto2, bool>> whereExpression2 = (p => p.Name2 == "Andreas Klapperich");
+                var p1 = ListOfPerson1.Where(Map(whereExpression2).Compile());
                 Dump(p1);
                 var p2 = Map(p1);
                 Assert.Single(p2);
@@ -146,8 +163,8 @@ namespace EifelMono.PlayGround.XTest.XExpressions
             }
 
             {
-                Expression<Func<PersonDto2, bool>> expression2 = (p => p.Name2.StartsWith("H"));
-                var p1 = ListOfPerson1.Where(Map(expression2).Compile());
+                Expression<Func<PersonDto2, bool>> whereExpression2 = (p => p.Name2.StartsWith("H"));
+                var p1 = ListOfPerson1.Where(Map(whereExpression2).Compile());
                 Dump(p1);
                 var p2 = Map(p1);
                 Assert.Equal(3, p2.Count());
@@ -155,14 +172,50 @@ namespace EifelMono.PlayGround.XTest.XExpressions
             }
 
             {
-                Expression<Func<PersonDto2, bool>> expression2 = (p => p.Gender2 == GenderDto2.Female);
-                var p1 = ListOfPerson1.Where(Map(expression2).Compile());
+                Expression<Func<PersonDto2, bool>> whereExpression2 = (p => p.Gender2 == GenderDto2.Female);
+                var epxression1 = Map(whereExpression2);
+                var p1 = ListOfPerson1.Where(epxression1.Compile());
                 Dump(p1);
                 var p2 = Map(p1);
                 Assert.Single(p2);
-                Assert.Equal(GenderDto1.Female, p1.First().Gender1);
+                Assert.Equal(2, p1.First().Gender1);
                 Assert.Equal(GenderDto2.Female, p2.First().Gender2);
                 Dump(p2);
+            }
+        }
+
+        [Fact(Skip = "Problems with enums as values if the other side is also an enum")]
+        public void TestExpressionDoesNotWork()
+        {
+            {
+                Expression<Func<PersonDto2, bool>> whereExpression2 = (p => p.State2 == StateDto2.Rlp);
+                var epxression1 = Map(whereExpression2);
+                var p1 = ListOfPerson1.Where(epxression1.Compile());
+                Dump(p1);
+                var p2 = Map(p1);
+                Assert.Single(p2);
+                Assert.Equal(2, p1.First().Gender1);
+                Assert.Equal(GenderDto2.Female, p2.First().Gender2);
+                Dump(p2);
+            }
+        }
+
+        [Fact]
+        public void TestExpressionOrder()
+        {
+            {
+                Expression<Func<PersonDto1, bool>> whereExpression2 = (p => p.State1 != StateDto1.Rlp);
+                var pA = ListOfPerson1.Where(whereExpression2.Compile());
+                foreach (var pa in pA)
+                    WriteLine(pa.ToString());
+
+                Split();
+
+                Expression<Func<PersonDto1, string>> orderByExpression1 = (p => p.City1);
+                var pB = ListOfPerson1.Where(whereExpression2.Compile()).OrderBy(orderByExpression1.Compile());
+                foreach (var pb in pB)
+                    WriteLine(pb.ToString());
+
             }
         }
     }
