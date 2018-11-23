@@ -15,8 +15,6 @@ namespace EifelMono.PlayGround.XCore
 
         public void WriteLine(string text= "") => Output.WriteLine(text);
 
-        public void Split(int len = 80) => WriteLine(new string('-', len));
-
         public void Line(int count=80) => Output.WriteLine(new string('-', count));
 
         public void DoubleLine(int count = 80) => Output.WriteLine(new string('=', count));
