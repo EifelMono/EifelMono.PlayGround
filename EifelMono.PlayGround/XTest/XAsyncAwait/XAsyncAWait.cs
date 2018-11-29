@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -223,34 +224,73 @@ namespace EifelMono.PlayGround.XTest.XAsyncAwait
         }
 
         [Fact]
-        public async Task TestIt()
+        public async Task TestItSimple()
         {
-            async Task<int> DoDelay()
+            async Task<int> DoDelayInt()
             {
                 WhereIAmBefore("DoDelay");
+                WriteLine("Task.Delay(100)");
                 await Task.Delay(100);
                 WhereIAmAfter("DoDelay");
                 return 1;
             }
 
-            async Task<T> CallAction<T>(Func<Task<T>> func) 
+            WhereIAmBefore("TestItSimple", true);
+            var z = await await DoDelayInt().ConfigureAwait(false);
+            WriteLine($"y={z}");
+            WhereIAmAfter("TestItSimple");
+        }
+
+        [Fact]
+        public async Task TestIt()
+        {
+            async Task<int> DoDelayInt()
             {
-                WhereIAmBefore("CallAction");
+                WhereIAmBefore("DoDelay Task<int>");
+                WriteLine("Task.Delay(100)");
+                await Task.Delay(100);
+                WhereIAmAfter("DoDelay Task<int>");
+                return 1;
+            }
+
+            async Task DoDelay()
+            {
+                WhereIAmBefore("DoDelay Task");
+                WriteLine("Task.Delay(100)");
+                await Task.Delay(100);
+                WhereIAmAfter("DoDelay Task");
+            }
+
+            async Task<T> CallActionA<T>(Func<Task<T>> func)
+            {
+                WhereIAmBefore("CallActionA Task<T>");
                 var x = await func().ConfigureAwait(false);
                 WriteLine($"x={x}");
-                WhereIAmAfter("CallAction");
+                WhereIAmAfter("CallActionA Task<T>");
                 return x;
             }
 
-            WhereIAmBefore("TestIt1", true);
-            var y = await CallAction(() => DoDelay()).ConfigureAwait(false);
-            WriteLine($"y={y}");
-            WhereIAmAfter("TestIt1");
+            async Task CallActionB(Func<Task> func)
+            {
+                WhereIAmBefore("CallActionB Task");
+                await func().ConfigureAwait(false);
+                WhereIAmAfter("CallActionB Task");
+            }
 
-            WhereIAmBefore("TestIt2", true);
-            var z = await await DoDelay().ConfigureAwait(false);
-            WriteLine($"y={z}");
-            WhereIAmAfter("TestIt2");
+            {
+                var stopwatch = Stopwatch.StartNew();
+                WhereIAmBefore("TestIt Task<Int>", true);
+                var y = await CallActionA(() => DoDelayInt()).ConfigureAwait(false);
+                WriteLine($"y={y}");
+                WhereIAmAfter($"TestIt Task<Int> {stopwatch.ElapsedMilliseconds}");
+            }
+
+            {
+                var stopwatch = Stopwatch.StartNew();
+                WhereIAmBefore("TestIt Task", true);
+                await CallActionB(() => DoDelay()).ConfigureAwait(false);
+                WhereIAmAfter($"TestIt Task {stopwatch.ElapsedMilliseconds}");
+            }
         }
     }
 }
