@@ -201,22 +201,52 @@ namespace EifelMono.PlayGround.XTest.XExpressions
         }
 
         [Fact]
-        public void TestExpressionOrder()
+        public void TestExpressionAndOrderBy()
         {
-            {
-                Expression<Func<PersonDto1, bool>> whereExpression2 = (p => p.State1 != StateDto1.Rlp);
-                var pA = ListOfPerson1.Where(whereExpression2.Compile());
-                foreach (var pa in pA)
-                    WriteLine(pa.ToString());
+            Expression<Func<PersonDto1, bool>> whereExpression2 = (p => p.State1 != StateDto1.Rlp);
+            var pA = ListOfPerson1.Where(whereExpression2.Compile());
+            foreach (var pa in pA)
+                WriteLine(pa.ToString());
 
-                Split();
+            Line();
 
-                Expression<Func<PersonDto1, string>> orderByExpression1 = (p => p.City1);
-                var pB = ListOfPerson1.Where(whereExpression2.Compile()).OrderBy(orderByExpression1.Compile());
-                foreach (var pb in pB)
-                    WriteLine(pb.ToString());
 
-            }
+            Expression<Func<PersonDto1, string>> orderByExpression1 = (p => p.City1);
+            var pB = ListOfPerson1.Where(whereExpression2.Compile()).OrderBy(orderByExpression1.Compile());
+            foreach (var pb in pB)
+                WriteLine(pb.ToString());
+
+            Line();
+
+            Expression<Func<PersonDto1, int>> orderByExpression2 = (p => p.BirthDate1.Month);
+            var pC = ListOfPerson1.Where(whereExpression2.Compile()).OrderBy(orderByExpression2.Compile());
+            foreach (var pc in pC)
+                WriteLine(pc.ToString());
+        }
+        //https://stackoverflow.com/questions/821365/how-to-convert-a-string-to-its-equivalent-linq-expression-tree
+
+        [Fact]
+        public void TestExpressionToString()
+        {
+            //{
+            //    Expression<Func<PersonDto1, bool>> whereExpression = (p => p.State1 != StateDto1.Rlp);
+            //    WriteLine(whereExpression.ToString());
+            //    WriteLine(whereExpression.Body.ToString());
+
+            //    var pA = ListOfPerson1.Where(whereExpression.Compile());
+            //    foreach (var pa in pA)
+            //        WriteLine(pa.ToString());
+            //}
+
+            //{ 
+            //    const string exp = @"p.State1 != StateDto1.Rlp";
+            //    var p = Expression.Parameter(typeof(PersonDto1), "PersonDto1");
+            //    var e = System.Linq.Dynamic.DynamicExpression.ParseLambda(new[] { p }, null, exp);
+            //    var pA = ListOfPerson1.Where(e.Compile());
+            //    foreach (var pa in pA)
+            //        WriteLine(pa.ToString());
+
+            //}
         }
     }
 }

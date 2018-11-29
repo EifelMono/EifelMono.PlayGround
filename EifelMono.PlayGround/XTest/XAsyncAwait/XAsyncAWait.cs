@@ -18,7 +18,7 @@ namespace EifelMono.PlayGround.XTest.XAsyncAwait
 
         private void WhereIAm(string message)
         {
-            WriteLine($"TaskId={Task.CurrentId} ThreadId={Thread.CurrentThread.ManagedThreadId} {message}");
+            WriteLine($"{DateTime.Now.ToString("HH:mm:ss,fff")} TaskId={Task.CurrentId} ThreadId={Thread.CurrentThread.ManagedThreadId} {message}");
         }
 
         private void WhereIAmBefore(string message, bool split = false)
@@ -221,8 +221,36 @@ namespace EifelMono.PlayGround.XTest.XAsyncAwait
             await WaitCCCCAsync();
             WhereIAmAfter(methode);
         }
+
+        [Fact]
+        public async Task TestIt()
+        {
+            async Task<int> DoDelay()
+            {
+                WhereIAmBefore("DoDelay");
+                await Task.Delay(100);
+                WhereIAmAfter("DoDelay");
+                return 1;
+            }
+
+            async Task<T> CallAction<T>(Func<Task<T>> func) 
+            {
+                WhereIAmBefore("CallAction");
+                var x = await func().ConfigureAwait(false);
+                WriteLine($"x={x}");
+                WhereIAmAfter("CallAction");
+                return x;
+            }
+
+            WhereIAmBefore("TestIt1", true);
+            var y = await CallAction(() => DoDelay()).ConfigureAwait(false);
+            WriteLine($"y={y}");
+            WhereIAmAfter("TestIt1");
+
+            WhereIAmBefore("TestIt2", true);
+            var z = await await DoDelay().ConfigureAwait(false);
+            WriteLine($"y={z}");
+            WhereIAmAfter("TestIt2");
+        }
     }
-
-
-
 }
